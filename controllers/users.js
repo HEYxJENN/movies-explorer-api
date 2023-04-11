@@ -1,4 +1,4 @@
-const bcrypt = require('bcrypt');
+// const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const Users = require('../models/user');
 const ValidationError = require('../errors/ValidationError');
@@ -8,8 +8,7 @@ const { CREATED } = require('../constants/constants');
 
 const { NODE_ENV, JWT_SECRET } = process.env;
 
-
-//POST /signin (логин)
+// POST /signin (логин)
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
   return Users.findUserByCredentials(email, password)
@@ -29,7 +28,6 @@ module.exports.login = (req, res, next) => {
       next(err);
     });
 };
-
 
 // GET users/me
 
@@ -51,20 +49,18 @@ module.exports.getMe = (req, res, next) => {
 
 module.exports.createUser = async (req, res, next) => {
   try {
-    const { name, about, avatar, email, password } = req.body;
-    const hash = await bcrypt.hash(password, 10);
+    const { email, password, name } = req.body;
+    // const hash = await bcrypt.hash(password, 10);
     const user = await Users.create({
-      name,
-      about,
-      avatar,
       email,
-      password: hash,
+      password,
+      name,
+      // : hash,
     });
-    user.password = undefined;
+    // user.password = undefined;
     res.status(CREATED).send({ data: user });
   } catch (err) {
     if (err.code === 11000) {
-      // res.status(409).send({ message: 'email уже существует' });
       next(new Conflict('email уже существует'));
     } else if (err.name === 'ValidationError') {
       next(new ValidationError('Ошибка валидации'));
@@ -98,7 +94,3 @@ module.exports.updateUser = (req, res, next) => {
       }
     });
 };
-
-
-
-
