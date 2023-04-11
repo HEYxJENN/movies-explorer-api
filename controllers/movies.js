@@ -1,4 +1,5 @@
-const Cards = require('../models/movie');
+const crypto = require('crypto');
+const Movies = require('../models/movie');
 const NotFound = require('../errors/NotFound');
 const ForbidddenError = require('../errors/ForbiddenError');
 const ValidationError = require('../errors/ValidationError');
@@ -11,9 +12,7 @@ const {
 // Get получаем все карты
 
 module.exports.getMovies = (req, res, next) => {
-  Cards.find({})
-    // .populate('owner')
-    // .populate('likes')
+  Movies.find({})
     .then((cards) => res.status(OK).send({ data: cards }))
     .catch((err) => next(err));
 };
@@ -21,9 +20,34 @@ module.exports.getMovies = (req, res, next) => {
 // Post создание карточки
 
 module.exports.createMovie = (req, res, next) => {
-  const { name, link } = req.body;
+  const {
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    nameRU,
+    nameEN,
+  } = req.body;
   const ownerId = req.user._id;
-  Cards.create({ name, link, owner: ownerId })
+  const movieIdg = crypto.randomBytes(16).toString('hex');
+  Movies.create({
+    country,
+    director,
+    duration,
+    year,
+    description,
+    image,
+    trailerLink,
+    thumbnail,
+    nameRU,
+    nameEN,
+    owner: ownerId,
+    movieId: movieIdg,
+  })
     // .populate('owner')
     // .populate('likes')
     .then((card) => res.status(OK).send({ data: card }))
@@ -36,17 +60,30 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
+// {
+//   "country":"rus",
+//       "director":"hz",
+//     "duration":"126",
+//      "year":"2000x",
+//       "description":"greatest",
+//        "image":"aaa.ru",
+//         "trailerLink":"bbb.ru",
+//          "thumbnail":"ccc.ru",
+//           "nameRU":"Green Elephant",
+//                     "nameEN":"Зеленый Слоник"
+//   }
+
 // Delete удаление
 module.exports.deleteMovie = async (req, res, next) => {
   try {
-    const card = await Cards.findById(req.params.cardId);
+    const card = await Movies.findById(req.params.cardId);
     if (!card) {
       throw new NotFound('Movie не найден');
     }
     if (card.owner.toString() !== req.user._id) {
       throw new ForbidddenError('Нет Доступа');
     }
-    await Cards.findByIdAndDelete(req.params.cardId);
+    await Movies.findByIdAndDelete(req.params.cardId);
     res.status(OK).send({ data: card });
   } catch (err) {
     if (err.name === 'CastError') {

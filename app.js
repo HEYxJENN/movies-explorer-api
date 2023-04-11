@@ -1,30 +1,29 @@
-console.log('Hello');
-require('dotenv').config();
+// require('dotenv').config();
 const express = require('express');
-// const bodyParser = require('body-parser');
-// const cors = require('cors');
+const bodyParser = require('body-parser');
+const cors = require('cors');
 const mongoose = require('mongoose');
-// const cookieParser = require('cookie-parser');
+const cookieParser = require('cookie-parser');
 const { celebrate, Joi, errors, Segments } = require('celebrate');
 const { createUser, login } = require('./controllers/users');
 const moviesRouter = require('./routes/movies');
 const usersRouter = require('./routes/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 const errorHandler = require('./middlewares/errorHandler');
 const NotFound = require('./errors/NotFound');
 // const { URLregex } = require('./constants/constants');
 const { requestLogger, errorLogger } = require('./middlewares/logger');
-// const corsOptions = require('./constants/corsconfig');
+const corsOptions = require('./constants/corsconfig');
 
-const { PORT = 3001 } = process.env;
+const { PORT = 3000 } = process.env;
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/moviesDB', {});
+mongoose.connect('mongodb://localhost:27017/movies', {});
 
-// app.use(cors(corsOptions));
-// app.use(cookieParser());
-// app.use(bodyParser.json());
-// app.use(bodyParser.urlencoded({ extended: true }));
+app.use(cors(corsOptions));
+app.use(cookieParser());
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 app.use(requestLogger);
 
 app.post(
@@ -37,6 +36,7 @@ app.post(
   }),
   login
 );
+
 app.post(
   '/signup',
   celebrate({
@@ -49,7 +49,7 @@ app.post(
   createUser
 );
 
-// app.use(auth);
+app.use(auth);
 
 app.use('/', usersRouter);
 app.use('/', moviesRouter);
@@ -59,6 +59,7 @@ app.use('/*', (req, res, next) => {
 app.use(errorLogger);
 app.use(errors());
 app.use(errorHandler);
+
 app.listen(PORT, () => {
   // eslint-disable-next-line no-console
   console.log(`App listening on port ${PORT}`);

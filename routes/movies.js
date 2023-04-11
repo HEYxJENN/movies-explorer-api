@@ -13,8 +13,16 @@ router.post(
   '/movies',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
-      name: Joi.string().min(2).max(30).required(),
-      link: Joi.string().min(2).required().regex(URLregex),
+      country: Joi.string().required(),
+      duration: Joi.required(),
+      director: Joi.string().required(),
+      year: Joi.required(),
+      description: Joi.string().required(),
+      image: Joi.required(),
+      trailerLink: Joi.required(),
+      thumbnail: Joi.required(),
+      nameRU: Joi.string().required(),
+      nameEN: Joi.string().required(),
     }),
   }),
   createMovie
@@ -29,6 +37,5 @@ router.delete(
   }),
   deleteMovie
 );
-
 
 module.exports = router;

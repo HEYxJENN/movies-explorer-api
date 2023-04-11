@@ -1,6 +1,6 @@
-// const bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
-const Users = require('../models/user');
+const users = require('../models/user');
 const ValidationError = require('../errors/ValidationError');
 const NotFound = require('../errors/NotFound');
 const Conflict = require('../errors/Conflict');
@@ -11,7 +11,8 @@ const { NODE_ENV, JWT_SECRET } = process.env;
 // POST /signin (логин)
 module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
-  return Users.findUserByCredentials(email, password)
+  return users
+    .findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign(
         { _id: user._id },
@@ -32,7 +33,8 @@ module.exports.login = (req, res, next) => {
 // GET users/me
 
 module.exports.getMe = (req, res, next) => {
-  Users.findById(req.user._id)
+  users
+    .findById(req.user._id)
     .then((user) => {
       if (!user) {
         throw new NotFound('Пользователь не найден');
@@ -50,14 +52,13 @@ module.exports.getMe = (req, res, next) => {
 module.exports.createUser = async (req, res, next) => {
   try {
     const { email, password, name } = req.body;
-    // const hash = await bcrypt.hash(password, 10);
-    const user = await Users.create({
+    const hash = await bcrypt.hash(password, 10);
+    const user = await users.create({
       email,
-      password,
+      password: hash,
       name,
-      // : hash,
     });
-    // user.password = undefined;
+    user.password = undefined;
     res.status(CREATED).send({ data: user });
   } catch (err) {
     if (err.code === 11000) {
@@ -73,12 +74,13 @@ module.exports.createUser = async (req, res, next) => {
 // PATCH users/me - обновление данных пользователя
 
 module.exports.updateUser = (req, res, next) => {
-  const { name, about } = req.body;
-  Users.findByIdAndUpdate(
-    req.user._id,
-    { name, about },
-    { new: true, runValidators: true }
-  )
+  const { name, email } = req.body;
+  users
+    .findByIdAndUpdate(
+      req.user._id,
+      { name, email },
+      { new: true, runValidators: true }
+    )
     .then((user) => {
       if (!user) {
         next(new NotFound('Пользователь не найден'));
