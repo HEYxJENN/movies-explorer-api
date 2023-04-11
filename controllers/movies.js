@@ -49,7 +49,6 @@ module.exports.createMovie = (req, res, next) => {
     movieId: movieIdg,
   })
     // .populate('owner')
-    // .populate('likes')
     .then((card) => res.status(OK).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError')
@@ -59,19 +58,6 @@ module.exports.createMovie = (req, res, next) => {
       }
     });
 };
-
-// {
-//   "country":"rus",
-//       "director":"hz",
-//     "duration":"126",
-//      "year":"2000x",
-//       "description":"greatest",
-//        "image":"aaa.ru",
-//         "trailerLink":"bbb.ru",
-//          "thumbnail":"ccc.ru",
-//           "nameRU":"Green Elephant",
-//                     "nameEN":"Зеленый Слоник"
-//   }
 
 // Delete удаление
 module.exports.deleteMovie = async (req, res, next) => {
@@ -93,3 +79,17 @@ module.exports.deleteMovie = async (req, res, next) => {
     }
   }
 };
+
+// тест запрос
+// {
+//   "country":"rus",
+//       "director":"hz",
+//     "duration":"126",
+//      "year":"2000x",
+//       "description":"greatest",
+//        "image":"aaa.ru",
+//         "trailerLink":"bbb.ru",
+//          "thumbnail":"ccc.ru",
+//           "nameRU":"Green Elephant",
+//                     "nameEN":"Зеленый Слоник"
+//   }
