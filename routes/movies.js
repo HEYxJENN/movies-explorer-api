@@ -20,6 +20,7 @@ router.post(
       image: Joi.required(),
       trailerLink: Joi.required(),
       thumbnail: Joi.required(),
+      movieId: Joi.required(),
       nameRU: Joi.string().required(),
       nameEN: Joi.string().required(),
     }),
