@@ -1,4 +1,4 @@
-const crypto = require('crypto');
+// const crypto = require('crypto');
 const Movies = require('../models/movie');
 const NotFound = require('../errors/NotFound');
 const ForbidddenError = require('../errors/ForbiddenError');
@@ -29,11 +29,12 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
+    movieId,
     nameRU,
     nameEN,
   } = req.body;
   const ownerId = req.user._id;
-  const movieIdg = crypto.randomBytes(16).toString('hex');
+  // const movieIdg = crypto.randomBytes(16).toString('hex');  movieID был генерируемым, мне показалось, что странно его вводить вручную
   Movies.create({
     country,
     director,
@@ -43,10 +44,11 @@ module.exports.createMovie = (req, res, next) => {
     image,
     trailerLink,
     thumbnail,
+    movieId,
     nameRU,
     nameEN,
     owner: ownerId,
-    movieId: movieIdg,
+    // movieId: movieIdg,
   })
     // .populate('owner')
     .then((card) => res.status(OK).send({ data: card }))
@@ -82,14 +84,14 @@ module.exports.deleteMovie = async (req, res, next) => {
 
 // тест запрос
 // {
-//   "country":"rus",
-//       "director":"hz",
-//     "duration":"126",
-//      "year":"2000x",
-//       "description":"greatest",
-//        "image":"aaa.ru",
-//         "trailerLink":"bbb.ru",
-//          "thumbnail":"ccc.ru",
-//           "nameRU":"Green Elephant",
-//                     "nameEN":"Зеленый Слоник"
-//   }
+// "country":"rus",
+// "director":"hz",
+// "duration":"126",
+// "year":"2000",
+// "description":"Greatest",
+// "image":"http://examples.com",
+// "trailerLink":"http://examples.com",
+// "thumbnail":"http://examples.com",
+// "nameRU":"Green Elephant2",
+// "nameEN":"Зеленый Слоник2"
+// }

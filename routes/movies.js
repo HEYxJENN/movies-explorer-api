@@ -5,7 +5,6 @@ const {
   createMovie,
   deleteMovie,
 } = require('../controllers/movies');
-// const { URLregex } = require('../constants/constants');
 
 router.get('/movies', getMovies);
 
