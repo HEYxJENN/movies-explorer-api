@@ -8,8 +8,8 @@ router.patch(
   '/users/me',
   celebrate({
     [Segments.BODY]: Joi.object().keys({
-      name: Joi.string().min(2).max(30),
-      email: Joi.string().email(),
+      name: Joi.string().required(),
+      email: Joi.string().required().email(),
     }),
   }),
   updateUser
