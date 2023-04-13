@@ -19,7 +19,7 @@ const movieSchema = new mongoose.Schema({
   },
 
   year: {
-    type: Number,
+    type: String,
     required: true,
   },
 
@@ -56,29 +56,25 @@ const movieSchema = new mongoose.Schema({
   },
 
   owner: {
-    // type: mongoose.Schema.Types.ObjectId,
-    type: String,
+    type: mongoose.Schema.Types.ObjectId,
+    // type: String,
     required: true,
-    // ref: 'user',
+    ref: 'user',
   },
 
   movieId: {
-    type: String,
+    type: Number,
     required: true,
   },
 
   nameRU: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
 
   nameEN: {
     type: String,
     required: true,
-    minlength: 2,
-    maxlength: 30,
   },
 });
 

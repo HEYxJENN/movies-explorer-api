@@ -3,11 +3,7 @@ const Movies = require('../models/movie');
 const NotFound = require('../errors/NotFound');
 const ForbidddenError = require('../errors/ForbiddenError');
 const ValidationError = require('../errors/ValidationError');
-const {
-  OK,
-  BAD_REQUEST_ERROR,
-  BAD_REQUEST_MESSAGE,
-} = require('../constants/constants');
+const { OK } = require('../constants/constants');
 
 // Get получаем все сохраненные пользователем фильмы
 
@@ -57,7 +53,7 @@ module.exports.createMovie = (req, res, next) => {
     .then((card) => res.status(OK).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError')
-        res.status(BAD_REQUEST_ERROR).send({ message: BAD_REQUEST_MESSAGE });
+        next(new ValidationError('Невалидныe данные'));
       else {
         next(err);
       }

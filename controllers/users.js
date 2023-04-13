@@ -89,7 +89,9 @@ module.exports.updateUser = (req, res, next) => {
       res.send({ data: user });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError') {
+      if (err.code === 11000) {
+        next(new Conflict('email уже существует'));
+      } else if (err.name === 'ValidationError') {
         next(new ValidationError('Ошибка валидации'));
       } else {
         next(err);
