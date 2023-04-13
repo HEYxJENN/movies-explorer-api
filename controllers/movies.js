@@ -9,15 +9,16 @@ const {
   BAD_REQUEST_MESSAGE,
 } = require('../constants/constants');
 
-// Get получаем все карты
+// Get получаем все сохраненные пользователем фильмы
 
 module.exports.getMovies = (req, res, next) => {
-  Movies.find({})
-    .then((cards) => res.status(OK).send({ data: cards }))
+  const ownerId = req.user._id;
+  Movies.find({ owner: ownerId })
+    .then((movies) => res.status(OK).send({ data: movies }))
     .catch((err) => next(err));
 };
 
-// Post создание карточки
+// Post создание фильма
 
 module.exports.createMovie = (req, res, next) => {
   const {
@@ -63,7 +64,8 @@ module.exports.createMovie = (req, res, next) => {
     });
 };
 
-// Delete удаление
+// Delete удаление фильма
+
 module.exports.deleteMovie = async (req, res, next) => {
   try {
     const card = await Movies.findById(req.params.cardId);
