@@ -14,10 +14,17 @@ const { requestLogger, errorLogger } = require('./middlewares/logger');
 const corsOptions = require('./constants/corsconfig');
 const limiter = require('./constants/rateLimit');
 
-const { PORT = 3000 } = process.env;
+require('dotenv').config();
+
+const { NODE_ENV, DATABASE_URL, PORT } = process.env;
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/movies', {}); // NODE_ENV==='production'? DATABASE_URL : "same as now"
+mongoose.connect(
+  NODE_ENV === 'production'
+    ? DATABASE_URL
+    : 'mongodb://localhost:27017/bitfilmsdb',
+  {}
+);
 
 app.use(limiter); // limiter
 app.use(cors(corsOptions));
