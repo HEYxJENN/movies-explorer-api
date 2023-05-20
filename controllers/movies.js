@@ -31,8 +31,7 @@ module.exports.createMovie = (req, res, next) => {
     nameEN,
   } = req.body;
   const ownerId = req.user._id;
-  // movieID был генерируемым, мне показалось, что странно его вводить вручную
-  // const movieIdg = crypto.randomBytes(16).toString('hex');
+
   Movies.create({
     country,
     director,
@@ -46,10 +45,8 @@ module.exports.createMovie = (req, res, next) => {
     nameRU,
     nameEN,
     owner: ownerId,
-    // movieId: movieIdg,
   })
-    // не уверен в каком виде должен быть пользовтаель айди или объект
-    // .populate('owner')
+
     .then((card) => res.status(OK).send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError')
